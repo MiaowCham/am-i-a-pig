@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
-  Fingerprint, RefreshCw, Sparkles, Cat, PiggyBank, Heart, 
+  Fingerprint, Sparkles, Cat, PiggyBank, Heart, 
   Search, Utensils, Banana, Cloud, Moon, Crown, 
   Coffee, BatteryWarning, Ghost, Armchair, Layers, Snowflake, 
   Drumstick, Meh, User, Zap, Dumbbell, Glasses, Music, 
@@ -26,7 +26,7 @@ export default function App() {
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // --- 结果大百科 ---
+  // --- v1.1.1 终极结果大百科 ---
   const outcomes: Outcome[] = [
     // ================= 🏆 超级稀有区 (0.2%) =================
     {
@@ -314,28 +314,6 @@ export default function App() {
     }
   ];
 
-  // --- 新增：检查本地存储 ---
-  useEffect(() => {
-    try {
-      const today = new Date().toDateString(); // 获取当前日期字符串 (e.g., "Thu Dec 04 2025")
-      const savedRecord = localStorage.getItem('pig_test_record_v1');
-      
-      if (savedRecord) {
-        const { date, resultId } = JSON.parse(savedRecord);
-        // 如果存储的日期和今天一样，则直接显示之前的结果
-        if (date === today && resultId) {
-          const previousResult = outcomes.find(o => o.id === resultId);
-          if (previousResult) {
-            setResult(previousResult);
-            setStatus('result'); // 直接跳转到结果页
-          }
-        }
-      }
-    } catch (e) {
-      console.error("无法读取本地存储", e);
-    }
-  }, []);
-
   const startScan = (e: React.MouseEvent | React.TouchEvent) => {
     // Check if cancelable for touch events to avoid console warnings
     if (e.cancelable) e.preventDefault();
@@ -373,7 +351,32 @@ export default function App() {
   const finishScan = () => {
     if (timerRef.current) cancelAnimationFrame(timerRef.current);
     
-    // --- 概率算法 ---
+    // --- 逻辑修改 v1.1.1: 检查是否已有当天结果 ---
+    const today = new Date().toDateString();
+    let finalResult: Outcome;
+    let savedRecord = null;
+    
+    try {
+       savedRecord = localStorage.getItem('pig_test_record_v1');
+    } catch(e) {
+       console.error("Local storage error", e);
+    }
+
+    if (savedRecord) {
+      const { date, resultId } = JSON.parse(savedRecord);
+      // 如果今天是同一天，且有有效ID，则直接使用旧结果
+      if (date === today && resultId) {
+         const found = outcomes.find(o => o.id === resultId);
+         if (found) {
+            finalResult = found;
+            setResult(finalResult);
+            setStatus('result');
+            return; // 直接返回，不再计算新结果
+         }
+      }
+    }
+
+    // --- 如果没有当天的记录，则进行随机计算 ---
     const rand = Math.random();
     let category = '';
 
@@ -404,24 +407,25 @@ export default function App() {
 
     // 从选定分类中随机抽取
     const candidates = outcomes.filter(item => item.category === category);
-    const finalResult = candidates.length > 0 
+    finalResult = candidates.length > 0 
       ? candidates[Math.floor(Math.random() * candidates.length)]
       : outcomes.find(o => o.id === 'pig_classic') || outcomes[0];
 
-    // --- 新增：保存到本地存储 ---
-    const today = new Date().toDateString();
-    localStorage.setItem('pig_test_record_v1', JSON.stringify({
-      date: today,
-      resultId: finalResult.id
-    }));
+    // --- 保存新结果到本地存储 ---
+    try {
+      localStorage.setItem('pig_test_record_v1', JSON.stringify({
+        date: today,
+        resultId: finalResult.id
+      }));
+    } catch (e) {
+      console.error("Save error", e);
+    }
 
     setResult(finalResult);
     setStatus('result');
   };
 
-  // 保留 resetTest 用于调试，但在界面中其触发入口已被隐藏
   const resetTest = () => {
-    // 实际生产环境如果严格禁止，可以注释掉这部分逻辑
     setStatus('idle');
     setResult(null);
     setProgress(0);
@@ -556,7 +560,7 @@ export default function App() {
                 {result.desc}
               </p>
 
-              {/* 修改处：移除了 Button，替换为锁定提示 */}
+              {/* 锁定状态提示 */}
               <div className="w-full py-4 rounded-2xl bg-gray-100 border border-gray-200 text-gray-400 font-bold text-sm flex items-center justify-center gap-2 select-none">
                  <Lock size={16} />
                  刷新不会改变哦，明天再试吧
@@ -574,7 +578,7 @@ export default function App() {
 
       {/* 版本号 */}
       <div className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50">
-        v1.1.0 (DayLock)
+        v1.1.1
       </div>
     </div>
   );
