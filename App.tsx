@@ -26,19 +26,19 @@ export default function App() {
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // --- v1.1.2 终极结果大百科 ---
+  // --- v1.1.3 终极结果大百科 ---
   const outcomes: Outcome[] = [
-    // ================= 🏆 超级稀有区 (0.2%) =================
+    // ================= 🏆 超级稀有区 (1个) =================
     {
       id: 'super_chimera',
       category: 'super_rare',
       title: "天选混沌体 🌌",
-      desc: "【UR级·千分之二掉率】系统过载！你同时拥有人类的智慧、猪猪的快乐和猫咪的妩媚。你是超越物种界限的究极生命体！",
+      desc: "【UR级·千分之一掉率】系统过载！你同时拥有人类的智慧、猪猪的快乐和猫咪的妩媚。你是超越物种界限的究极生命体！",
       color: "from-indigo-600 via-purple-600 to-pink-600",
       icon: <Stars className="w-20 h-20 text-yellow-300 animate-spin-slow" />
     },
 
-    // ================= 💎 稀有区 (2%) =================
+    // ================= 💎 稀有区 (4个) =================
     {
       id: 'rare_diamond',
       category: 'rare',
@@ -72,7 +72,7 @@ export default function App() {
       icon: <Sparkles className="w-16 h-16 text-white" />
     },
 
-    // ================= 🧍‍♂️ 人类阵营 (24% - 5种结果) =================
+    // ================= 🧍‍♂️ 人类阵营 (5个) =================
     {
       id: 'human_normal',
       category: 'human',
@@ -115,7 +115,7 @@ export default function App() {
     },
 
 
-    // ================= 🐷 猪猪阵营 (剩余概率约 32%) =================
+    // ================= 🐷 猪猪阵营 (7个) =================
     {
       id: 'pig_classic',
       category: 'pig',
@@ -173,7 +173,7 @@ export default function App() {
       icon: <BatteryWarning className="w-16 h-16 text-white" />
     },
 
-    // ================= 🐱 猪咪阵营 (剩余概率约 32%) =================
+    // ================= 🐱 猪咪阵营 (7个) =================
     {
       id: 'cat_classic',
       category: 'cat',
@@ -231,7 +231,7 @@ export default function App() {
       icon: <Music className="w-16 h-16 text-white" />
     },
 
-    // ================= 🤡 特殊搞怪类 (10%) =================
+    // ================= 🤡 特殊搞怪类 (10个) =================
     {
       id: 'special_joke',
       category: 'special',
@@ -376,33 +376,34 @@ export default function App() {
       }
     }
 
-    // --- 如果没有当天的记录，则进行随机计算 ---
+    // --- 概率算法 ---
+    // 概率累加 (Cumulative Probability)
     const rand = Math.random();
     let category = '';
 
-    // 1. 超级稀有: 0 ~ 0.002 (0.2%)
-    if (rand < 0.002) {
+    // 1. 超级稀有: 0 ~ 0.001 (0.1%)
+    if (rand < 0.001) {
       category = 'super_rare';
     }
-    // 2. 稀有: 0.002 ~ 0.022 (2%)
-    else if (rand < 0.022) {
+    // 2. 稀有: 0.001 ~ 0.011 (总1% -> 4个项，每项0.25%)
+    else if (rand < 0.011) {
       category = 'rare';
     }
-    // 3. 人类 (大幅提升): 0.022 ~ 0.262 (24%)
-    else if (rand < 0.262) {
-      category = 'human';
-    }
-    // 4. 特殊搞怪: 0.262 ~ 0.362 (10%)
-    else if (rand < 0.362) {
+    // 3. 特殊: 0.011 ~ 0.111 (总10% -> 10个项，每项1%)
+    else if (rand < 0.111) {
       category = 'special';
     }
-    // 5. 剩余 63.8% 平分给 猪猪 和 猪咪 (各 31.9%)
-    // 0.362 + 0.319 = 0.681
-    else if (rand < 0.681) {
-      category = 'pig';
+    // 4. 人类: 0.111 ~ 0.236 (总12.5% -> 5个项，每项2.5%)
+    else if (rand < 0.236) {
+      category = 'human';
     }
-    else {
+    // 5. 猪咪: 0.236 ~ 0.586 (总35% -> 7个项，每项5%)
+    else if (rand < 0.586) {
       category = 'cat';
+    }
+    // 6. 猪猪: 0.586 ~ 1.0 (剩余所有 ≈ 41.4%)
+    else {
+      category = 'pig';
     }
 
     // 从选定分类中随机抽取
@@ -576,7 +577,7 @@ export default function App() {
          ✦ Powered by Gemini
       </div>
 
-      {/* 左下角 GitHub 链接 */}
+      {/* 左下角 GitHub 链接 (大图标) */}
       <a 
         href="https://github.com/MiaowCham/am-i-a-pig" 
         target="_blank" 
@@ -589,7 +590,7 @@ export default function App() {
 
       {/* 版本号 */}
       <div className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50">
-        v1.1.2
+        v1.1.3
       </div>
     </div>
   );
