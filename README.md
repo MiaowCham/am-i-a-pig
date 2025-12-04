@@ -1,9 +1,10 @@
 # 测测你是不是猪🐷
 
 >[!note]
->本项目使用AI生成。
+>本项目使用AI生成。  
+>This project uses AI generation.
 
-一个网页小项目。测试属随机数抽取，仅供娱乐。  
+一个网页小项目。测试属随机数抽取，仅供娱乐。[点击访问](https://piggytest.miaowcham.top)  
 网页使用 Vite React 技术，依赖项：lucide-react。
 
 ## 本地运行 Run Locally
