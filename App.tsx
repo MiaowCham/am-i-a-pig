@@ -5,7 +5,7 @@ import {
   Coffee, BatteryWarning, Ghost, Armchair, Layers, Snowflake, 
   Drumstick, Meh, User, Zap, Dumbbell, Glasses, Music, 
   Wifi, Leaf, FileQuestion, Diamond, Trophy, ShieldCheck, Stars,
-  Briefcase, Shovel, Eye, Lock
+  Briefcase, Shovel, Eye, Lock, Github
 } from 'lucide-react';
 
 interface Outcome {
@@ -26,7 +26,7 @@ export default function App() {
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // --- v1.1.1 终极结果大百科 ---
+  // --- v1.1.2 终极结果大百科 ---
   const outcomes: Outcome[] = [
     // ================= 🏆 超级稀有区 (0.2%) =================
     {
@@ -351,7 +351,7 @@ export default function App() {
   const finishScan = () => {
     if (timerRef.current) cancelAnimationFrame(timerRef.current);
     
-    // --- 逻辑修改 v1.1.1: 检查是否已有当天结果 ---
+    // --- 逻辑: 检查是否已有当天结果 ---
     const today = new Date().toDateString();
     let finalResult: Outcome;
     let savedRecord = null;
@@ -576,9 +576,20 @@ export default function App() {
          ✦ Powered by Gemini
       </div>
 
+      {/* 左下角 GitHub 链接 */}
+      <a 
+        href="https://github.com/MiaowCham/am-i-a-pig" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-2 left-2 text-pink-300/40 hover:text-pink-500 transition-colors z-50"
+        aria-label="View on GitHub"
+      >
+        <Github size={20} />
+      </a>
+
       {/* 版本号 */}
       <div className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50">
-        v1.1.1
+        v1.1.2
       </div>
     </div>
   );
