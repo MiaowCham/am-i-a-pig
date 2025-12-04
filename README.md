@@ -1,20 +1,22 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 测测你是不是猪🐷
 
-# Run and deploy your AI Studio app
+>[!note]
+>本项目使用AI生成。
 
-This contains everything you need to run your app locally.
+一个网页小项目。测试属随机数抽取，仅供娱乐。  
+网页使用 Vite React 技术，依赖项：lucide-react。
 
-View your app in AI Studio: https://ai.studio/apps/temp/1
+## 本地运行 Run Locally
 
-## Run Locally
-
+**先决条件：** Node.js  
 **Prerequisites:**  Node.js
 
-
-1. Install dependencies:
+1. 安装依赖项 Install dependencies：
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. 运行应用程序 Run the app：
    `npm run dev`
+
+## 注释与许可
+
+本项目由 [Google AI Studio](https://aistudio.google.com/) 及 [✦Gemini](https://gemini.google.com/) 强力驱动。  
+本项目使用 MIT 协议。
