@@ -1,0 +1,56 @@
+name: 部署到 GitHub Pages
+
+on:
+  # 只有当代码推送到 main 分支时才触发（如果你的主分支叫 master，请把下面的 main 改成 master）
+  push:
+    branches: ["main"]
+  # 允许你手动在 GitHub 页面上点击按钮来触发部署
+  workflow_dispatch:
+
+# 设置权限，允许这个脚本修改你的 Pages 页面
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许同时进行一个部署任务
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # 第一阶段：构建（打包）
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 下载代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js 环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 安装依赖包
+        run: npm install
+
+      - name: 打包项目
+        run: npm run build
+
+      - name: 上传构建好的文件
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # 第二阶段：部署（发布）
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 发布到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
