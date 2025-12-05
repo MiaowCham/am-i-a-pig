@@ -5,7 +5,8 @@ import {
   Coffee, BatteryWarning, Ghost, Armchair, Layers, Snowflake, 
   Drumstick, Meh, User, Zap, Dumbbell, Glasses, Music, 
   Wifi, Leaf, FileQuestion, Diamond, Trophy, ShieldCheck, Stars,
-  Briefcase, Shovel, Eye, Lock, Github, Settings, X, Trash2
+  Briefcase, Shovel, Eye, Lock, Github, Settings, X, Trash2,
+  Skull, Bug, Brain, GitMerge, Circle, BookOpen, Sword, VenetianMask
 } from 'lucide-react';
 
 interface Outcome {
@@ -42,9 +43,9 @@ export default function App() {
     disableStorage: false
   });
 
-  // --- v1.2.0 终极结果大百科 ---
+  // --- v1.3.0 猪猪宇宙爆发版 ---
   const outcomes: Outcome[] = [
-    // ================= 🏆 超级稀有区 (1个) =================
+    // ================= 🏆 超级稀有区 (0.1%) =================
     {
       id: 'super_chimera',
       category: 'super_rare',
@@ -54,7 +55,7 @@ export default function App() {
       icon: <Stars className="w-20 h-20 text-yellow-300 animate-spin-slow" />
     },
 
-    // ================= 💎 稀有区 (4个) =================
+    // ================= 💎 稀有区 (0.9%) =================
     {
       id: 'rare_diamond',
       category: 'rare',
@@ -88,50 +89,63 @@ export default function App() {
       icon: <Sparkles className="w-16 h-16 text-white" />
     },
 
-    // ================= 🧍‍♂️ 人类阵营 (5个) =================
+    // ================= 🐷 猪猪阵营 (主力军 50%) =================
     {
-      id: 'human_normal',
-      category: 'human',
-      title: "纯正人类 🧍‍♂️",
-      desc: "【碳基生物】经过反复核对，你目前各项指标均属于人类范畴。没有猪耳朵，也没有猫尾巴。请继续保持！",
-      color: "from-blue-500 to-indigo-600",
-      icon: <User className="w-16 h-16 text-white" />
+      id: 'pig_zhubajie',
+      category: 'pig',
+      title: "天蓬元帅 🪮",
+      desc: "【传说级猪猪】曾经统领八万水军，如今统领八个菜系。等下，谁给我钉耙换成梳子了？",
+      color: "from-stone-600 to-stone-800",
+      icon: <Cloud className="w-16 h-16 text-white" />
     },
     {
-      id: 'human_worker',
-      category: 'human',
-      title: "天选打工人 💼",
-      desc: "【职场生物】检测显示你不是猪，也不是猫，但你的基因里写满了“早八”和“加班”。虽然不是猪，但干着牛马的活。",
-      color: "from-slate-500 to-slate-700",
-      icon: <Briefcase className="w-16 h-16 text-white" />
+      id: 'pig_wukong',
+      category: 'pig',
+      title: "孙悟猪 🐵",
+      desc: "一只拥有猴子灵魂的猪。你性格急躁，身手敏捷，但最后还是逃不过“真香”定律，坐下来吃了个痛快。",
+      color: "from-yellow-500 to-amber-600",
+      icon: <Zap className="w-16 h-16 text-white" />
     },
     {
-      id: 'human_scooper',
-      category: 'human',
-      title: "卑微铲屎官 🧹",
-      desc: "【服务型人类】你的手不是用来拿猪蹄的，是用来开罐头和铲猫砂的。你在食物链的地位低于猪和猫。",
-      color: "from-amber-600 to-orange-700",
-      icon: <Shovel className="w-16 h-16 text-white" />
+      id: 'pig_monk',
+      category: 'pig',
+      title: "圣僧猪 📜",
+      desc: "“贫僧从东土大唐而来...” 你是一只心怀慈悲、只吃素（大概吧）的佛系猪猪。别吃我，我不好吃！",
+      color: "from-red-500 to-orange-600",
+      icon: <BookOpen className="w-16 h-16 text-white" />
     },
     {
-      id: 'human_royal',
-      category: 'human',
-      title: "在逃贵族 👑",
-      desc: "【高贵人类】系统提示：您的气质过于高贵，无法匹配猪猪数据库。请问您的皇冠掉在哪里了？",
-      color: "from-rose-400 to-pink-500",
-      icon: <Crown className="w-16 h-16 text-white" />
+      id: 'pig_zombie',
+      category: 'pig',
+      title: "僵尸猪 🧟",
+      desc: "【异变体】虽然身体已经变成了猪肉干，但对食物的渴望让你永生！脑子...不，我要吃白菜...",
+      color: "from-green-600 to-emerald-800",
+      icon: <Skull className="w-16 h-16 text-green-200" />
     },
     {
-      id: 'human_watcher',
-      category: 'human',
-      title: "吃瓜群众 🍉",
-      desc: "【围观人类】你不是来测自己是不是猪的，你只是来看看别人是不是猪的。看热闹不嫌事大。",
-      color: "from-green-500 to-emerald-600",
-      icon: <Eye className="w-16 h-16 text-white" />
+      id: 'pig_skeleton',
+      category: 'pig',
+      title: "骷髅猪 💀",
+      desc: "你瘦得只剩骨头了！这不科学！作为一只猪，这简直是耻辱...或者是一种极致的减肥成功？",
+      color: "from-gray-400 to-slate-500",
+      icon: <Skull className="w-16 h-16 text-white" />
     },
-
-
-    // ================= 🐷 猪猪阵营 (7个) =================
+    {
+      id: 'pig_boar',
+      category: 'pig',
+      title: "狂暴野猪 🐗",
+      desc: "你的基因里写满了野性！不要惹我，我发起脾气来连我自己都拱！冲撞力MAX！",
+      color: "from-stone-700 to-brown-900",
+      icon: <Sword className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'pig_pearl',
+      category: 'pig',
+      title: "珍珠 (真·猪) ⚪",
+      desc: "谐音梗扣钱！你圆润如玉，白白净净，不仅是掌上明珠，也是货真价实的“真猪”。",
+      color: "from-slate-200 to-slate-300",
+      icon: <Circle className="w-16 h-16 text-white" />
+    },
     {
       id: 'pig_classic',
       category: 'pig',
@@ -143,8 +157,8 @@ export default function App() {
     {
       id: 'pig_cute',
       category: 'pig',
-      title: "绝世可爱猪 🌸",
-      desc: "你是吃可爱多长大的吗？虽然不仅吃得多还睡得多，但因为实在太可爱了，全世界都原谅了你的懒惰。",
+      title: "小香猪 🌸",
+      desc: "永远长不大的谎言。小时候你是迷你的，长大后你是迷一样的庞然大物，但依然可爱满分！",
       color: "from-pink-300 to-pink-400",
       icon: <Heart className="w-16 h-16 text-white" />
     },
@@ -152,7 +166,7 @@ export default function App() {
       id: 'pig_bailan',
       category: 'pig',
       title: "摆烂猪 🫠",
-      desc: "“算了吧”、“没必要”、“随便吧”。你的猪生信条是：只要我放弃得够快，困难就困不住我。",
+      desc: "“算了吧”、“没必要”。你的猪生信条是：只要我放弃得够快，困难就困不住我。",
       color: "from-slate-400 to-gray-500",
       icon: <Ghost className="w-16 h-16 text-white" />
     },
@@ -183,18 +197,50 @@ export default function App() {
     {
       id: 'pig_work',
       category: 'pig',
-      title: "努力猪猪 💪",
-      desc: "虽然身体是猪，但志气很高！每天勤勤恳恳，为了赚那几棵白菜操碎了心。加油啊猪猪！",
-      color: "from-blue-600 to-blue-800",
+      title: "猪人打工仔 🧱",
+      desc: "像人一样直立行走，像猪一样哼哧干活。Minecraft 里的中立生物，只要不惹你，你还是很温顺的。",
+      color: "from-pink-600 to-rose-800",
       icon: <BatteryWarning className="w-16 h-16 text-white" />
     },
 
-    // ================= 🐱 猪咪阵营 (7个) =================
+    // ================= 🐱 猪咪阵营 (30%) =================
+    {
+      id: 'cat_logic',
+      category: 'cat',
+      title: "逻辑猪咪 🧠",
+      desc: "暹罗猫，俗称“煤气罐”。脸黑是因为心思重（逻辑缜密），身圆是因为食量大。你是猪咪界的智商担当。",
+      color: "from-stone-700 to-black",
+      icon: <Brain className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'cat_lihua',
+      category: 'cat',
+      title: "狸花猪咪 🐯",
+      desc: "身披虎皮纹，走路带风，但依然掩盖不住你那圆滚滚的小肚腩。战斗力极强，干饭能力更强！",
+      color: "from-yellow-700 to-orange-800",
+      icon: <Cat className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'cat_spider',
+      category: 'cat',
+      title: "蜘猪侠 (Spider-Ham) 🕷️",
+      desc: "被受辐射的猪咬了一口的蜘蛛？不，你就是只要吃饱了就能倒挂在天花板上的神奇猪咪！",
+      color: "from-red-600 to-blue-700",
+      icon: <Bug className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'cat_true_chimera',
+      category: 'cat',
+      title: "真·猪咪 (合体) 🧬",
+      desc: "科学的奇迹！你有猪的鼻子和猫的耳朵。你发出的声音是“喵哼~”。",
+      color: "from-purple-500 to-pink-500",
+      icon: <GitMerge className="w-16 h-16 text-white" />
+    },
     {
       id: 'cat_classic',
       category: 'cat',
       title: "标准猪咪 🐱",
-      desc: "【混血王子】猫的傲娇 + 猪的食量。在猫猫界你是最能吃的，在猪猪界你是最灵活的！",
+      desc: "猫的傲娇 + 猪的食量。在猫猫界你是最能吃的，在猪猪界你是最灵活的！",
       color: "from-orange-400 to-amber-500",
       icon: <Cat className="w-16 h-16 text-white" />
     },
@@ -247,7 +293,50 @@ export default function App() {
       icon: <Music className="w-16 h-16 text-white" />
     },
 
-    // ================= 🤡 特殊搞怪类 (10个) =================
+    // ================= 🧍‍♂️ 人类阵营 (14%) =================
+    {
+      id: 'human_normal',
+      category: 'human',
+      title: "纯正人类 🧍‍♂️",
+      desc: "【碳基生物】经过反复核对，你目前各项指标均属于人类范畴。没有猪耳朵，也没有猫尾巴。请继续保持！",
+      color: "from-blue-500 to-indigo-600",
+      icon: <User className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'human_worker',
+      category: 'human',
+      title: "天选打工人 💼",
+      desc: "【职场生物】检测显示你不是猪，也不是猫，但你的基因里写满了“早八”和“加班”。虽然不是猪，但干着牛马的活。",
+      color: "from-slate-500 to-slate-700",
+      icon: <Briefcase className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'human_scooper',
+      category: 'human',
+      title: "卑微铲屎官 🧹",
+      desc: "【服务型人类】你的手不是用来拿猪蹄的，是用来开罐头和铲猫砂的。你在食物链的地位低于猪和猫。",
+      color: "from-amber-600 to-orange-700",
+      icon: <Shovel className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'human_royal',
+      category: 'human',
+      title: "在逃贵族 👑",
+      desc: "【高贵人类】系统提示：您的气质过于高贵，无法匹配猪猪数据库。请问您的皇冠掉在哪里了？",
+      color: "from-rose-400 to-pink-500",
+      icon: <Crown className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'human_watcher',
+      category: 'human',
+      title: "吃瓜群众 🍉",
+      desc: "【围观人类】你不是来测自己是不是猪的，你只是来看看别人是不是猪的。看热闹不嫌事大。",
+      color: "from-green-500 to-emerald-600",
+      icon: <Eye className="w-16 h-16 text-white" />
+    },
+
+
+    // ================= 🤡 特殊搞怪类 (5%) =================
     {
       id: 'special_joke',
       category: 'special',
@@ -327,6 +416,14 @@ export default function App() {
       desc: "错误：未找到对象。系统扫描了半天，发现你不仅不是猪，好像还没有对象（恋人）。扎心了。",
       color: "from-zinc-600 to-zinc-800",
       icon: <FileQuestion className="w-16 h-16 text-white" />
+    },
+    {
+      id: 'special_masked',
+      category: 'special',
+      title: "蒙面猪猪侠 🎭",
+      desc: "你戴着面具，行踪神秘。有人说你是为了正义，也有人说你只是长了颗痘痘不好意思见人。",
+      color: "from-indigo-800 to-slate-900",
+      icon: <VenetianMask className="w-16 h-16 text-white" />
     }
   ];
 
@@ -433,21 +530,40 @@ export default function App() {
       }
     }
 
-    // --- 2. 确定结果 (Debug 强制 或 随机) ---
+    // --- 2. 确定结果 (Debug 强制 或 概率算法 v1.3.0) ---
     let category = '';
 
     if (debugConfig.forceCategory !== 'default') {
       // Debug 强制模式
       category = debugConfig.forceCategory;
     } else {
-      // 正常概率算法 v1.1.3
+      // 概率算法 v1.3.0: 猪猪 > 猪咪 > 人类 > 特殊 > 稀有 > 超级稀有
       const rand = Math.random();
-      if (rand < 0.001) category = 'super_rare';
-      else if (rand < 0.011) category = 'rare';
-      else if (rand < 0.111) category = 'special';
-      else if (rand < 0.236) category = 'human';
-      else if (rand < 0.586) category = 'cat';
-      else category = 'pig';
+      
+      // 1. 超级稀有: 0 ~ 0.001 (0.1%)
+      if (rand < 0.001) {
+        category = 'super_rare';
+      }
+      // 2. 稀有: 0.001 ~ 0.010 (总 0.9%)
+      else if (rand < 0.010) {
+        category = 'rare';
+      }
+      // 3. 特殊: 0.010 ~ 0.060 (总 5%)
+      else if (rand < 0.060) {
+        category = 'special';
+      }
+      // 4. 人类: 0.060 ~ 0.200 (总 14%)
+      else if (rand < 0.200) {
+        category = 'human';
+      }
+      // 5. 猪咪: 0.200 ~ 0.500 (总 30%)
+      else if (rand < 0.500) {
+        category = 'cat';
+      }
+      // 6. 猪猪: 0.500 ~ 1.0 (剩余所有 ≈ 50%)
+      else {
+        category = 'pig';
+      }
     }
 
     // 从选定分类中随机抽取
@@ -723,10 +839,8 @@ export default function App() {
         onClick={handleVersionClick}
         className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50 cursor-pointer select-none active:text-pink-500 transition-colors"
       >
-        v1.2.0
+        v1.3.0
       </div>
     </div>
   );
 }
-
-
