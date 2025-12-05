@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Fingerprint, Sparkles, Cat, PiggyBank, Heart, 
+  Fingerprint, RefreshCw, Sparkles, Cat, PiggyBank, Heart, 
   Search, Utensils, Banana, Cloud, Moon, Crown, 
   Coffee, BatteryWarning, Ghost, Armchair, Layers, Snowflake, 
   Drumstick, Meh, User, Zap, Dumbbell, Glasses, Music, 
   Wifi, Leaf, FileQuestion, Diamond, Trophy, ShieldCheck, Stars,
-  Briefcase, Shovel, Eye, Lock, Github
+  Briefcase, Shovel, Eye, Lock, Github, Settings, X, Trash2
 } from 'lucide-react';
 
 interface Outcome {
@@ -19,6 +19,13 @@ interface Outcome {
 
 type AppStatus = 'idle' | 'scanning' | 'result';
 
+// Debug 配置接口
+interface DebugConfig {
+  forceCategory: string; // 'default' | 'super_rare' ...
+  allowRetry: boolean;   // 开启重测
+  disableStorage: boolean; // 禁用存储
+}
+
 export default function App() {
   const [status, setStatus] = useState<AppStatus>('idle'); 
   const [progress, setProgress] = useState<number>(0);
@@ -26,7 +33,16 @@ export default function App() {
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // --- v1.1.3 终极结果大百科 ---
+  // --- Debug 状态 ---
+  const [clickCount, setClickCount] = useState(0); // 版本号点击计数
+  const [showDebug, setShowDebug] = useState(false); // 是否显示 Debug 弹窗
+  const [debugConfig, setDebugConfig] = useState<DebugConfig>({
+    forceCategory: 'default',
+    allowRetry: false,
+    disableStorage: false
+  });
+
+  // --- v1.2.0 终极结果大百科 ---
   const outcomes: Outcome[] = [
     // ================= 🏆 超级稀有区 (1个) =================
     {
@@ -314,8 +330,50 @@ export default function App() {
     }
   ];
 
+  // --- 初始化：检测是否有 NoLocalStorage 标记 ---
+  useEffect(() => {
+    const noStorage = localStorage.getItem('pig_test_no_local_storage');
+    if (noStorage === 'true') {
+      setDebugConfig(prev => ({ ...prev, allowRetry: true, disableStorage: true }));
+    }
+  }, []);
+
+  const handleVersionClick = () => {
+    setClickCount(prev => {
+      const next = prev + 1;
+      if (next >= 7) {
+        setShowDebug(true);
+        return 0; // 重置计数
+      }
+      return next;
+    });
+  };
+
+  const handleDebugToggleRetry = (checked: boolean) => {
+    if (checked) {
+      // 启用重试：清除当前记录
+      localStorage.removeItem('pig_test_record_v1');
+    } else {
+      // 关闭重试：如果不允许重试，强制关闭禁用存储
+       setDebugConfig(prev => ({ ...prev, disableStorage: false }));
+       localStorage.removeItem('pig_test_no_local_storage');
+    }
+    setDebugConfig(prev => ({ ...prev, allowRetry: checked }));
+  };
+
+  const handleDebugToggleStorage = (checked: boolean) => {
+    if (checked) {
+      // 启用禁用存储：清除所有记录并打标记
+      localStorage.removeItem('pig_test_record_v1');
+      localStorage.setItem('pig_test_no_local_storage', 'true');
+    } else {
+      // 关闭禁用存储：移除标记
+      localStorage.removeItem('pig_test_no_local_storage');
+    }
+    setDebugConfig(prev => ({ ...prev, disableStorage: checked }));
+  };
+
   const startScan = (e: React.MouseEvent | React.TouchEvent) => {
-    // Check if cancelable for touch events to avoid console warnings
     if (e.cancelable) e.preventDefault();
     if (status === 'result') return;
 
@@ -351,59 +409,45 @@ export default function App() {
   const finishScan = () => {
     if (timerRef.current) cancelAnimationFrame(timerRef.current);
     
-    // --- 逻辑: 检查是否已有当天结果 ---
+    // --- 1. 检查锁定逻辑 (仅在未开启重测模式时检查) ---
     const today = new Date().toDateString();
     let finalResult: Outcome;
     let savedRecord = null;
     
-    try {
-       savedRecord = localStorage.getItem('pig_test_record_v1');
-    } catch(e) {
-       console.error("Local storage error", e);
-    }
+    // 如果没有开启重试，才去读本地存储
+    if (!debugConfig.allowRetry) {
+      try {
+         savedRecord = localStorage.getItem('pig_test_record_v1');
+      } catch(e) { console.error(e); }
 
-    if (savedRecord) {
-      const { date, resultId } = JSON.parse(savedRecord);
-      // 如果今天是同一天，且有有效ID，则直接使用旧结果
-      if (date === today && resultId) {
-         const found = outcomes.find(o => o.id === resultId);
-         if (found) {
-            finalResult = found;
-            setResult(finalResult);
-            setStatus('result');
-            return; // 直接返回，不再计算新结果
-         }
+      if (savedRecord) {
+        const { date, resultId } = JSON.parse(savedRecord);
+        if (date === today && resultId) {
+           const found = outcomes.find(o => o.id === resultId);
+           if (found) {
+              setResult(found);
+              setStatus('result');
+              return; 
+           }
+        }
       }
     }
 
-    // --- 概率算法 ---
-    // 概率累加 (Cumulative Probability)
-    const rand = Math.random();
+    // --- 2. 确定结果 (Debug 强制 或 随机) ---
     let category = '';
 
-    // 1. 超级稀有: 0 ~ 0.001 (0.1%)
-    if (rand < 0.001) {
-      category = 'super_rare';
-    }
-    // 2. 稀有: 0.001 ~ 0.011 (总1% -> 4个项，每项0.25%)
-    else if (rand < 0.011) {
-      category = 'rare';
-    }
-    // 3. 特殊: 0.011 ~ 0.111 (总10% -> 10个项，每项1%)
-    else if (rand < 0.111) {
-      category = 'special';
-    }
-    // 4. 人类: 0.111 ~ 0.236 (总12.5% -> 5个项，每项2.5%)
-    else if (rand < 0.236) {
-      category = 'human';
-    }
-    // 5. 猪咪: 0.236 ~ 0.586 (总35% -> 7个项，每项5%)
-    else if (rand < 0.586) {
-      category = 'cat';
-    }
-    // 6. 猪猪: 0.586 ~ 1.0 (剩余所有 ≈ 41.4%)
-    else {
-      category = 'pig';
+    if (debugConfig.forceCategory !== 'default') {
+      // Debug 强制模式
+      category = debugConfig.forceCategory;
+    } else {
+      // 正常概率算法 v1.1.3
+      const rand = Math.random();
+      if (rand < 0.001) category = 'super_rare';
+      else if (rand < 0.011) category = 'rare';
+      else if (rand < 0.111) category = 'special';
+      else if (rand < 0.236) category = 'human';
+      else if (rand < 0.586) category = 'cat';
+      else category = 'pig';
     }
 
     // 从选定分类中随机抽取
@@ -412,14 +456,16 @@ export default function App() {
       ? candidates[Math.floor(Math.random() * candidates.length)]
       : outcomes.find(o => o.id === 'pig_classic') || outcomes[0];
 
-    // --- 保存新结果到本地存储 ---
-    try {
-      localStorage.setItem('pig_test_record_v1', JSON.stringify({
-        date: today,
-        resultId: finalResult.id
-      }));
-    } catch (e) {
-      console.error("Save error", e);
+    // --- 3. 保存逻辑 (仅在允许存储时保存) ---
+    if (!debugConfig.disableStorage && !debugConfig.allowRetry) {
+      try {
+        localStorage.setItem('pig_test_record_v1', JSON.stringify({
+          date: today,
+          resultId: finalResult.id
+        }));
+      } catch (e) {
+        console.error("Save error", e);
+      }
     }
 
     setResult(finalResult);
@@ -561,13 +607,97 @@ export default function App() {
                 {result.desc}
               </p>
 
-              {/* 锁定状态提示 */}
-              <div className="w-full py-4 rounded-2xl bg-gray-100 border border-gray-200 text-gray-400 font-bold text-sm flex items-center justify-center gap-2 select-none">
-                 <Lock size={16} />
-                 刷新不会改变哦，明天再试吧
-              </div>
-
+              {/* 按钮状态：根据 allowRetry 决定显示 锁 还是 按钮 */}
+              {debugConfig.allowRetry ? (
+                <button
+                  onClick={resetTest}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xl
+                    ${result.category === 'super_rare' 
+                      ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-orange-200 animate-pulse' 
+                      : 'bg-gray-900 text-white hover:bg-gray-800 shadow-gray-200'}`}
+                >
+                  <RefreshCw size={20} />
+                  再测一次
+                </button>
+              ) : (
+                <div className="w-full py-4 rounded-2xl bg-gray-100 border border-gray-200 text-gray-400 font-bold text-sm flex items-center justify-center gap-2 select-none">
+                   <Lock size={16} />
+                   刷新不会改变哦，明天再试吧
+                </div>
+              )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= DEBUG 弹窗 ================= */}
+      {showDebug && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-white rounded-xl w-full max-w-xs overflow-hidden shadow-2xl animate-in zoom-in-95">
+             <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
+                <div className="flex items-center gap-2 font-mono font-bold">
+                  <Settings size={18} />
+                  Developer Mode
+                </div>
+                <button onClick={() => setShowDebug(false)} className="text-gray-400 hover:text-white">
+                  <X size={20} />
+                </button>
+             </div>
+             
+             <div className="p-4 space-y-4">
+                {/* 爆率调整 */}
+                <div>
+                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Force Outcome (Next Spin)</label>
+                   <select 
+                      value={debugConfig.forceCategory} 
+                      onChange={(e) => setDebugConfig({...debugConfig, forceCategory: e.target.value})}
+                      className="w-full p-2 bg-gray-100 rounded-lg text-sm font-medium border-none focus:ring-2 focus:ring-pink-500"
+                   >
+                      <option value="default">🎲 Default Probability</option>
+                      <option value="super_rare">🌌 Super Rare (UR)</option>
+                      <option value="rare">💎 Rare (SSR)</option>
+                      <option value="special">🤡 Special</option>
+                      <option value="human">🧍 Human</option>
+                      <option value="cat">🐱 Cat</option>
+                      <option value="pig">🐷 Pig</option>
+                   </select>
+                </div>
+
+                {/* 选项开关 */}
+                <div className="space-y-3 pt-2 border-t border-gray-100">
+                   {/* 开启重测 */}
+                   <label className="flex items-center justify-between cursor-pointer group">
+                      <span className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                         <RefreshCw size={16} className="text-gray-400" />
+                         Enable Retry
+                      </span>
+                      <input 
+                         type="checkbox" 
+                         checked={debugConfig.allowRetry}
+                         onChange={(e) => handleDebugToggleRetry(e.target.checked)}
+                         className="w-5 h-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                      />
+                   </label>
+
+                   {/* 禁用存储 (必须先开启重测) */}
+                   <label className={`flex items-center justify-between cursor-pointer group ${!debugConfig.allowRetry ? 'opacity-40 pointer-events-none' : ''}`}>
+                      <span className="text-sm font-bold text-red-600 flex items-center gap-2">
+                         <Trash2 size={16} />
+                         Disable LocalStorage
+                      </span>
+                      <input 
+                         type="checkbox" 
+                         checked={debugConfig.disableStorage}
+                         onChange={(e) => handleDebugToggleStorage(e.target.checked)}
+                         disabled={!debugConfig.allowRetry}
+                         className="w-5 h-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                      />
+                   </label>
+                </div>
+             </div>
+             <div className="bg-gray-50 p-3 text-[10px] text-gray-400 text-center font-mono">
+                Click version 7 times to toggle
+             </div>
           </div>
         </div>
       )}
@@ -577,7 +707,7 @@ export default function App() {
          ✦ Powered by Gemini
       </div>
 
-      {/* 左下角 GitHub 链接 (大图标) */}
+      {/* 左下角 GitHub 链接 */}
       <a 
         href="https://github.com/MiaowCham/am-i-a-pig" 
         target="_blank" 
@@ -588,10 +718,15 @@ export default function App() {
         <Github size={20} />
       </a>
 
-      {/* 版本号 */}
-      <div className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50">
-        v1.1.3
+      {/* 版本号 (可点击) */}
+      <div 
+        onClick={handleVersionClick}
+        className="fixed bottom-2 right-2 text-[10px] text-pink-300/40 font-mono z-50 cursor-pointer select-none active:text-pink-500 transition-colors"
+      >
+        v1.2.0
       </div>
     </div>
   );
 }
+
+
